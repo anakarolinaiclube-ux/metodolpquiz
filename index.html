@@ -3,48 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quiz: Descubra seu Perfil de Dependência - Método Respira</title>
+    <title>Quiz: Seu Perfil de Dependência</title>
     
-    <!-- Importando Fontes (Mesmas da Página de Vendas) -->
+    <!-- Importando Fontes -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Ícones -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
     <style>
-        /* --- DESIGN SYSTEM: "CLINICAL IMMERSION" (IDÊNTICO À PÁGINA DE VENDAS) --- */
+        /* --- VARIAVEIS & RESET --- */
         :root {
-            /* Cores Principais */
-            --primary: #2563eb;       /* Azul Real */
-            --primary-dark: #1e3a8a;  /* Azul Marinho */
-            --accent: #06b6d4;        /* Ciano/Turquesa */
-            --accent-light: #ecfeff;
-            
-            /* Neutros e Fundos */
-            --bg-body: #0f172a;       /* Fundo Escuro para Imersão Total no Quiz */
-            --bg-card: #ffffff;
-            
-            /* Texto */
+            --primary: #0f766e;       /* Teal Profundo */
+            --primary-light: #14b8a6; /* Teal Vibrante */
+            --accent: #f59e0b;        /* Laranja Suave para destaque */
+            --alert: #ef4444;         /* Vermelho Alerta */
+            --bg-body: #111827;       /* Fundo quase preto */
+            --card-bg: #ffffff;
             --text-main: #1e293b;
-            --text-light: #64748b;
+            --text-muted: #64748b;
+            --surface: #f8fafc;       /* Cinza muito claro para botões */
             
-            /* UI */
-            --radius: 20px;
-            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            
-            /* Fontes */
-            --font-serif: 'Playfair Display', serif;
-            --font-sans: 'Poppins', sans-serif;
+            --font-main: 'Poppins', sans-serif;
+            --radius: 16px;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
         body {
-            font-family: var(--font-sans);
+            font-family: var(--font-main);
+            /* Fundo moderno com profundidade */
             background-color: var(--bg-body);
-            background-image: radial-gradient(circle at 50% 0%, #1e3a8a 0%, #0f172a 60%);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(172,66%,40%,0.3) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(210,100%,23%,0.3) 0px, transparent 50%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -53,340 +48,1038 @@
             color: var(--text-main);
         }
 
-        /* --- CONTAINER PRINCIPAL --- */
+        /* --- CONTAINER DO QUIZ --- */
         .quiz-card {
-            background: var(--bg-card);
+            background: var(--card-bg);
             width: 100%;
-            max-width: 600px;
+            max-width: 600px; /* Levemente menor para focar a visão */
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            padding: 40px;
+            padding: 40px; /* Mais respiro */
             position: relative;
             overflow: hidden;
-            min-height: 450px;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255,255,255,0.1);
+            transition: height 0.3s ease;
         }
 
-        /* Barra de Progresso */
-        .progress-container {
+        /* Barra de Progresso Minimalista */
+        .progress-wrapper {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 6px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
             background: #e2e8f0;
         }
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent) 0%, var(--primary) 100%);
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
             width: 0%;
-            transition: width 0.4s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0 4px 4px 0;
         }
 
-        /* --- TIPOGRAFIA --- */
-        h1, h2 { font-family: var(--font-serif); color: var(--primary-dark); line-height: 1.2; }
-        
-        .intro-screen h1 { font-size: 2rem; margin-bottom: 15px; font-weight: 700; }
-        .intro-screen p { color: var(--text-light); margin-bottom: 30px; font-size: 1.05rem; }
-
-        /* --- PERGUNTAS --- */
-        .question-screen { display: none; animation: fadeIn 0.5s ease; }
-        .question-count { 
-            color: var(--accent); font-weight: 700; font-size: 0.8rem; 
-            text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; 
+        /* --- HEADER --- */
+        .badge {
+            display: inline-block;
+            background: #f0fdfa;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #ccfbf1;
         }
-        .question-text { font-size: 1.3rem; font-weight: 600; margin-bottom: 25px; color: var(--text-main); }
 
-        /* Opções de Resposta */
-        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            line-height: 1.25;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .intro {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .highlight-red { color: var(--alert); font-weight: 600; text-decoration: line-through; opacity: 0.7; }
+        .highlight-teal { color: var(--primary); font-weight: 700; }
+
+        /* --- PERGUNTAS & OPÇÕES --- */
+        .question-box { display: none; }
+        .question-box.active { 
+            display: block; 
+            animation: slideUpFade 0.5s ease forwards;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 25px;
+            color: #0f172a;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
         .option-btn {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            padding: 18px 20px;
+            background: var(--surface);
+            border: 2px solid transparent;
+            padding: 18px 24px;
             border-radius: 12px;
             text-align: left;
             cursor: pointer;
-            font-family: var(--font-sans);
-            font-size: 1rem;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
             color: var(--text-main);
-            transition: all 0.2s ease;
+            font-weight: 500;
+            transition: all 0.25s ease;
             position: relative;
             display: flex;
             align-items: center;
+            justify-content: space-between;
         }
-        
-        /* Círculo de seleção */
-        .option-btn::before {
-            content: ''; width: 18px; height: 18px; border: 2px solid #cbd5e1;
-            border-radius: 50%; margin-right: 15px; flex-shrink: 0;
+
+        /* Círculo simulando Radio Button */
+        .option-btn::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            margin-left: 15px;
             transition: all 0.2s;
+            flex-shrink: 0;
         }
 
-        .option-btn:hover { border-color: var(--accent); background: var(--accent-light); }
-        .option-btn:hover::before { border-color: var(--accent); }
+        .option-btn:hover {
+            background: #fff;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .option-btn.selected {
+            background: #f0fdfa;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
         
-        .option-btn.selected { 
-            background: var(--primary); border-color: var(--primary); color: white; 
+        .option-btn.selected::after {
+            border-color: var(--primary);
+            background-color: var(--primary);
+            box-shadow: inset 0 0 0 4px #fff;
         }
-        .option-btn.selected::before { 
-            border-color: white; background: white; 
-            box-shadow: inset 0 0 0 3px var(--primary); 
-        }
-
-        /* --- TELA DE LOADING (Diagnóstico) --- */
-        .loading-screen { 
-            display: none; text-align: center; padding-top: 40px; 
-        }
-        .spinner {
-            width: 60px; height: 60px; border: 4px solid #e2e8f0;
-            border-top: 4px solid var(--accent); border-radius: 50%;
-            margin: 0 auto 20px auto; animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         /* --- RESULTADO --- */
-        .result-screen { display: none; text-align: center; animation: slideUp 0.6s ease; }
-        
-        .diagnosis-badge {
-            background: #fee2e2; color: #ef4444; padding: 6px 12px;
-            border-radius: 50px; font-size: 0.8rem; font-weight: 700;
-            text-transform: uppercase; display: inline-block; margin-bottom: 15px;
+        .result-box {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
         }
 
-        .therapist-box {
-            background: #f0f9ff; border-left: 4px solid var(--primary);
-            padding: 15px; text-align: left; margin: 20px 0; border-radius: 0 8px 8px 0;
+        .result-icon-container {
+            width: 80px;
+            height: 80px;
+            background: #fee2e2;
+            color: var(--alert);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px auto;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .result-description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        /* GRÁFICO MODERNIZADO */
+        .graph-container {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 0 0 30px 0;
+            text-align: left;
+            border: 1px solid #e2e8f0;
         }
         
+        .graph-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar-group { margin-bottom: 15px; }
+        .bar-group:last-child { margin-bottom: 0; }
+
+        .bar-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .track {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%; /* JS anima */
+        }
+        .fill.low { background: #94a3b8; animation: fillLow 1.5s forwards; }
+        .fill.high { 
+            background: linear-gradient(90deg, #14b8a6, #0d9488); 
+            animation: fillHigh 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            box-shadow: 0 0 10px rgba(20, 184, 166, 0.5);
+        }
+
+        @keyframes fillLow { to { width: 5%; } }
+        @keyframes fillHigh { to { width: 94%; } }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: #f0fdfa;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            font-size: 0.9rem;
+            color: #134e4a;
+            text-align: left;
+            font-weight: 500;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* CTA BUTTON */
         .btn-cta {
+            background: #10b981; /* Verde Success */
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white; width: 100%; padding: 20px;
-            font-size: 1.1rem; font-weight: 700; text-transform: uppercase;
-            border: none; border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
-            margin-top: 20px; transition: transform 0.2s;
-            text-decoration: none; display: block;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 22px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            transition: transform 0.2s;
+            animation: pulse-soft 2s infinite;
         }
-        .btn-cta:hover { transform: translateY(-3px); }
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.5);
+        }
 
-        /* Animações */
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* ANIMAÇÕES */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes pulse-soft {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
 
-        /* Responsividade */
+        /* RESPONSIVO */
         @media (max-width: 480px) {
-            .quiz-card { padding: 30px 20px; min-height: 400px; }
-            h1 { font-size: 1.6rem; }
-            .option-btn { font-size: 0.95rem; padding: 15px; }
+            .quiz-card { 
+                padding: 30px 20px; 
+                border-radius: 20px;
+                min-height: 85vh; /* Mais imersivo no mobile */
+                justify-content: center;
+            }
+            h1 { font-size: 1.5rem; }
+            .option-btn { padding: 16px 20px; font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
     <div class="quiz-card">
-        <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
-
-        <!-- TELA 1: INTRODUÇÃO -->
-        <div class="intro-screen" id="introScreen">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <i class="fas fa-lungs" style="font-size: 3rem; color: var(--accent);"></i>
-            </div>
-            <h1 class="text-center">Você fuma por hábito ou por dependência emocional?</h1>
-            <p class="text-center">
-                Faça este teste rápido de 30 segundos e descubra o que está impedindo você de largar o cigarro (e como resolver isso sem sofrimento).
-            </p>
-            <div style="text-align: center; font-size: 0.8rem; color: var(--text-light); margin-bottom: 20px;">
-                <i class="fas fa-users"></i> 5.300+ pessoas já fizeram esta análise.
-            </div>
-            <button class="btn-cta" onclick="startQuiz()" style="background: var(--primary);">COMEÇAR ANÁLISE AGORA</button>
+        <!-- Barra de Progresso no Topo -->
+        <div class="progress-wrapper">
+            <div class="progress-bar" id="progressBar"></div>
         </div>
 
-        <!-- TELA 2: PERGUNTAS (Dinâmico) -->
-        <div class="question-screen" id="questionScreen">
-            <div class="question-count" id="qCount">PERGUNTA 1 DE 5</div>
-            <div class="question-text" id="qText">Carregando pergunta...</div>
-            <div class="options-grid" id="optionsGrid"></div>
-        </div>
-
-        <!-- TELA 3: PROCESSANDO (Loading) -->
-        <div class="loading-screen" id="loadingScreen">
-            <div class="spinner"></div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 10px;">Analisando seu Perfil...</h2>
-            <p id="loadingText">Mapeando gatilhos emocionais...</p>
-        </div>
-
-        <!-- TELA 4: RESULTADO -->
-        <div class="result-screen" id="resultScreen">
-            <div class="diagnosis-badge"><i class="fas fa-exclamation-circle"></i> Diagnóstico Concluído</div>
+        <!-- HEADER INICIAL (Desaparece no resultado) -->
+        <div id="quiz-header">
+            <div class="badge">Mapeamento Rápido</div>
+            <h1>Você controla o cigarro ou ele controla você?</h1>
             
-            <h2 style="margin-bottom: 15px;">Seu perfil: Dependência Subconsciente</h2>
-            
-            <p style="text-align: left; margin-bottom: 15px; color: var(--text-light);">
-                Suas respostas indicam que o cigarro não é apenas um vício químico para você, mas uma <strong>muleta emocional</strong> enraizada no seu sistema nervoso.
+            <p class="intro">
+                Descubra em 30 segundos o bloqueio mental oculto.<br>
+                Pare de nutrir o <span class="highlight-red">hábito</span> e retome o <span class="highlight-teal">controle</span>.
             </p>
+        </div>
 
-            <div class="therapist-box">
-                <i class="fas fa-brain" style="color: var(--primary); margin-right: 5px;"></i>
-                <strong>O que isso significa?</strong><br>
-                Significa que tentar parar usando apenas "força de vontade" vai falhar 97% das vezes, pois seu cérebro entende o cigarro como uma proteção contra o estresse.
+        <!-- CONTEÚDO DINÂMICO -->
+        <div id="quiz-content"></div>
+
+        <!-- TELA DE RESULTADO -->
+        <div id="quiz-result" class="result-box">
+            <div class="result-icon-container">
+                <i class="fas fa-brain"></i>
+            </div>
+            
+            <div class="result-title">Diagnóstico: Vício Subconsciente</div>
+            
+            <div class="result-description">
+                <p>Suas respostas indicam que o cigarro se tornou uma <strong>muleta emocional</strong> enraizada na sua neurobiologia. Tentar parar apenas com "força de vontade" gera atrito mental, causando recaídas.</p>
+            </div>
+            
+            <!-- Gráfico Visualmente Melhorado -->
+            <div class="graph-container">
+                <div class="graph-header">
+                    <span>Probabilidade de Sucesso</span>
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                
+                <div class="bar-group">
+                    <div class="bar-info">
+                        <span style="color: #64748b;">Método Tradicional</span>
+                        <span>3%</span>
+                    </div>
+                    <div class="track"><div class="fill low"></div></div>
+                </div>
+                
+                <div class="bar-group" style="margin-top: 15px;">
+                    <div class="bar-info">
+                        <span style="color: var(--primary);">Método Respira</span>
+                        <span style="color: var(--primary);">93%</span>
+                    </div>
+                    <div class="track"><div class="fill high"></div></div>
+                </div>
             </div>
 
-            <p style="text-align: left; font-size: 0.95rem; margin-bottom: 10px;">
-                A boa notícia é que é possível <strong>desligar esse gatilho</strong> usando Hipnoterapia Clínica (reprogramação mental).
-            </p>
+            <div class="highlight-box">
+                <i class="fas fa-check-circle" style="margin-right:8px"></i>
+                Não lute contra o vício. Reprograme sua mente para esquecer que ele existe em 21 dias.
+            </div>
 
-            <!-- LINK PARA A PÁGINA DE VENDAS -->
-            <a href="https://metodolp.vercel.app/" class="btn-cta">
-                QUERO PARAR DE FUMAR NATURALMENTE
-                <br><span style="font-size: 0.75rem; font-weight: 500; text-transform: none;">Ver vídeo explicativo do método</span>
+            <a href="https://metodorespira.vercel.app/" class="btn-cta">
+                Reprogramar Minha Mente
+                <i class="fas fa-arrow-right"></i>
             </a>
             
-            <div style="margin-top: 15px; font-size: 0.75rem; color: #94a3b8;">
-                <i class="fas fa-lock"></i> Resultado confidencial e seguro.
-            </div>
+            <p style="margin-top: 15px; font-size: 0.75rem; color: #94a3b8;">Acesso imediato e seguro.</p>
         </div>
+
     </div>
 
     <script>
-        // Dados das Perguntas
+        // Lógica do Quiz Otimizada para UX
         const questions = [
             {
-                question: "Qual é a primeira coisa que você sente ao pensar em ficar um dia inteiro sem fumar?",
+                question: "1. Qual sua relação com o cigarro pela manhã?",
                 options: [
-                    "Ansiedade e nervosismo imediatos.",
-                    "Sinto que faltaria algo para relaxar.",
-                    "Acho que conseguiria, mas com esforço.",
-                    "Medo de ficar irritado com as pessoas."
+                    "É a primeira coisa que faço (em 30 min).",
+                    "Fumo logo após o café para 'ativar'.",
+                    "Consigo esperar até sair de casa.",
+                    "Sem horário fixo, fumo por estresse."
                 ]
             },
             {
-                question: "Em quais momentos a vontade de fumar é incontrolável?",
+                question: "2. O que acontece ao tentar parar?",
                 options: [
-                    "Logo ao acordar (com café).",
-                    "Quando estou estressado ou ansioso.",
-                    "Depois das refeições.",
-                    "Quando bebo álcool ou estou socializando."
+                    "A ansiedade fica insuportável.",
+                    "Sinto que perco minha paz/relaxamento.",
+                    "Consigo uns dias, mas recaio na crise.",
+                    "Nunca tentei por medo de falhar."
                 ]
             },
             {
-                question: "Quantas vezes você já tentou parar e falhou?",
+                question: "3. Se pudesse desligar a vontade hoje, você faria?",
                 options: [
-                    "Nunca tentei de verdade.",
-                    "1 a 3 vezes.",
-                    "Mais de 5 vezes.",
-                    "Tento toda semana, mas recaio."
-                ]
-            },
-            {
-                question: "Você sente que o cigarro é seu único momento de 'paz' no dia?",
-                options: [
-                    "Sim, é meu momento de fuga.",
-                    "Às vezes, ajuda a organizar as ideias.",
-                    "Não, fumo apenas por hábito automático.",
-                    "Sim, sinto que ele é meu 'amigo'."
-                ]
-            },
-            {
-                question: "Se existisse um método para 'desligar' a vontade de fumar sem sofrer abstinência, você tentaria?",
-                options: [
-                    "Sim, preciso disso urgentemente.",
-                    "Com certeza, mas tenho medo de não funcionar.",
-                    "Sim, se for algo natural e sem remédios.",
-                    "Talvez, mas sou cético."
+                    "Sim! Não aguento mais gastar saúde.",
+                    "Com certeza, quero ser livre.",
+                    "Sim, se for natural e sem remédios.",
+                    "Tenho medo, mas preciso urgente."
                 ]
             }
         ];
 
-        let currentStep = 0;
-        
-        // Elementos DOM
+        let currentQuestionIndex = 0;
+        const quizContent = document.getElementById('quiz-content');
         const progressBar = document.getElementById('progressBar');
-        const introScreen = document.getElementById('introScreen');
-        const questionScreen = document.getElementById('questionScreen');
-        const optionsGrid = document.getElementById('optionsGrid');
-        const qCount = document.getElementById('qCount');
-        const qText = document.getElementById('qText');
-        const loadingScreen = document.getElementById('loadingScreen');
-        const loadingText = document.getElementById('loadingText');
-        const resultScreen = document.getElementById('resultScreen');
-
-        function startQuiz() {
-            introScreen.style.display = 'none';
-            questionScreen.style.display = 'block';
-            loadQuestion();
-        }
+        const quizHeader = document.getElementById('quiz-header');
+        const quizResult = document.getElementById('quiz-result');
 
         function loadQuestion() {
-            const q = questions[currentStep];
-            
-            // Atualiza barra
-            const progress = ((currentStep) / questions.length) * 100;
+            // Atualiza barra (UX visual: começa com um pouco preenchido)
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
             progressBar.style.width = `${progress}%`;
 
-            // Atualiza textos
-            qCount.innerText = `PERGUNTA ${currentStep + 1} DE ${questions.length}`;
-            qText.innerText = q.question;
+            quizContent.innerHTML = ''; // Limpa anterior
 
-            // Limpa opções antigas
-            optionsGrid.innerHTML = '';
+            const q = questions[currentQuestionIndex];
+            
+            // Container da pergunta com animação
+            const qBox = document.createElement('div');
+            qBox.className = 'question-box active';
 
-            // Cria novas opções com delay para efeito visual
-            q.options.forEach((opt, index) => {
-                const btn = document.createElement('div');
+            // Texto da Pergunta
+            const qTitle = document.createElement('div');
+            qTitle.className = 'question-text';
+            qTitle.innerText = q.question;
+            qBox.appendChild(qTitle);
+
+            // Container das Opções
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-grid';
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('div'); // Mudado para div para melhor controle de estilo
                 btn.className = 'option-btn';
                 btn.innerText = opt;
-                btn.style.animation = `fadeIn 0.5s ease ${index * 0.1}s forwards`;
-                btn.style.opacity = '0'; // Começa invisível para o fade funcionar
                 
-                btn.onclick = () => selectOption(btn);
-                optionsGrid.appendChild(btn);
+                // Adiciona evento de clique com feedback visual
+                btn.onclick = function() {
+                    // Remove seleção de outros
+                    const allOpts = optionsDiv.querySelectorAll('.option-btn');
+                    allOpts.forEach(el => el.classList.remove('selected'));
+                    
+                    // Adiciona seleção ao atual
+                    this.classList.add('selected');
+
+                    // Pequeno delay para o usuário perceber a seleção (Melhora UX)
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 350);
+                };
+                
+                optionsDiv.appendChild(btn);
             });
+
+            qBox.appendChild(optionsDiv);
+            quizContent.appendChild(qBox);
         }
 
-        function selectOption(btnElement) {
-            // Feedback visual de seleção
-            const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.classList.remove('selected'));
-            btnElement.classList.add('selected');
+        function nextQuestion() {
+            currentQuestionIndex++;
 
-            // Avança após pequeno delay
-            setTimeout(() => {
-                currentStep++;
-                if (currentStep < questions.length) {
-                    loadQuestion();
-                } else {
-                    finishQuiz();
-                }
-            }, 300);
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
         }
 
         function finishQuiz() {
+            // Animação final da barra
             progressBar.style.width = '100%';
-            questionScreen.style.display = 'none';
-            loadingScreen.style.display = 'block';
-
-            // Simula processamento de dados (Gatilho de Autoridade/Tecnologia)
-            const texts = [
-                "Mapeando gatilhos emocionais...",
-                "Comparando com base de dados clínica...",
-                "Calculando nível de dependência...",
-                "Gerando diagnóstico..."
-            ];
-
-            let textIndex = 0;
-            const textInterval = setInterval(() => {
-                textIndex++;
-                if(textIndex < texts.length) {
-                    loadingText.innerText = texts[textIndex];
-                }
-            }, 800);
-
-            // Mostra resultado final após 3.5 segundos
+            
+            // Fade out do conteúdo
+            quizContent.style.opacity = '0';
+            quizHeader.style.opacity = '0';
+            
             setTimeout(() => {
-                clearInterval(textInterval);
-                loadingScreen.style.display = 'none';
-                resultScreen.style.display = 'block';
-            }, 3500);
+                quizHeader.style.display = 'none';
+                quizContent.style.display = 'none';
+                quizResult.style.display = 'block';
+                
+                // Scroll suave para garantir visibilidade em telas pequenas
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300);
         }
+
+        // Iniciar
+        loadQuestion();
+
+    </script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quiz: Seu Perfil de Dependência</title>
+    
+    <!-- Importando Fontes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Ícones -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        /* --- VARIAVEIS & RESET --- */
+        :root {
+            --primary: #0f766e;       /* Teal Profundo */
+            --primary-light: #14b8a6; /* Teal Vibrante */
+            --accent: #f59e0b;        /* Laranja Suave para destaque */
+            --alert: #ef4444;         /* Vermelho Alerta */
+            --bg-body: #111827;       /* Fundo quase preto */
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --surface: #f8fafc;       /* Cinza muito claro para botões */
+            
+            --font-main: 'Poppins', sans-serif;
+            --radius: 16px;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            font-family: var(--font-main);
+            /* Fundo moderno com profundidade */
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(172,66%,40%,0.3) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, hsla(210,100%,23%,0.3) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-main);
+        }
+
+        /* --- CONTAINER DO QUIZ --- */
+        .quiz-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 600px; /* Levemente menor para focar a visão */
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 40px; /* Mais respiro */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: height 0.3s ease;
+        }
+
+        /* Barra de Progresso Minimalista */
+        .progress-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%);
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* --- HEADER --- */
+        .badge {
+            display: inline-block;
+            background: #f0fdfa;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 6px 12px;
+            border-radius: 50px;
+            margin-bottom: 20px;
+            border: 1px solid #ccfbf1;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 1.8rem;
+            line-height: 1.25;
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .intro {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 35px;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .highlight-red { color: var(--alert); font-weight: 600; text-decoration: line-through; opacity: 0.7; }
+        .highlight-teal { color: var(--primary); font-weight: 700; }
+
+        /* --- PERGUNTAS & OPÇÕES --- */
+        .question-box { display: none; }
+        .question-box.active { 
+            display: block; 
+            animation: slideUpFade 0.5s ease forwards;
+        }
+
+        .question-text {
+            font-weight: 600;
+            font-size: 1.25rem;
+            margin-bottom: 25px;
+            color: #0f172a;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .option-btn {
+            background: var(--surface);
+            border: 2px solid transparent;
+            padding: 18px 24px;
+            border-radius: 12px;
+            text-align: left;
+            cursor: pointer;
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: all 0.25s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Círculo simulando Radio Button */
+        .option-btn::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 50%;
+            margin-left: 15px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .option-btn:hover {
+            background: #fff;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .option-btn.selected {
+            background: #f0fdfa;
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .option-btn.selected::after {
+            border-color: var(--primary);
+            background-color: var(--primary);
+            box-shadow: inset 0 0 0 4px #fff;
+        }
+
+        /* --- RESULTADO --- */
+        .result-box {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .result-icon-container {
+            width: 80px;
+            height: 80px;
+            background: #fee2e2;
+            color: var(--alert);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px auto;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            color: #0f172a;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .result-description {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        /* GRÁFICO MODERNIZADO */
+        .graph-container {
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 0 0 30px 0;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .graph-header {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .bar-group { margin-bottom: 15px; }
+        .bar-group:last-child { margin-bottom: 0; }
+
+        .bar-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .track {
+            width: 100%;
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%; /* JS anima */
+        }
+        .fill.low { background: #94a3b8; animation: fillLow 1.5s forwards; }
+        .fill.high { 
+            background: linear-gradient(90deg, #14b8a6, #0d9488); 
+            animation: fillHigh 2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            box-shadow: 0 0 10px rgba(20, 184, 166, 0.5);
+        }
+
+        @keyframes fillLow { to { width: 5%; } }
+        @keyframes fillHigh { to { width: 94%; } }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: #f0fdfa;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            font-size: 0.9rem;
+            color: #134e4a;
+            text-align: left;
+            font-weight: 500;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* CTA BUTTON */
+        .btn-cta {
+            background: #10b981; /* Verde Success */
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 22px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+            transition: transform 0.2s;
+            animation: pulse-soft 2s infinite;
+        }
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(16, 185, 129, 0.5);
+        }
+
+        /* ANIMAÇÕES */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        @keyframes pulse-soft {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 480px) {
+            .quiz-card { 
+                padding: 30px 20px; 
+                border-radius: 20px;
+                min-height: 85vh; /* Mais imersivo no mobile */
+                justify-content: center;
+            }
+            h1 { font-size: 1.5rem; }
+            .option-btn { padding: 16px 20px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-card">
+        <!-- Barra de Progresso no Topo -->
+        <div class="progress-wrapper">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- HEADER INICIAL (Desaparece no resultado) -->
+        <div id="quiz-header">
+            <div class="badge">Mapeamento Rápido</div>
+            <h1>Você controla o cigarro ou ele controla você?</h1>
+            
+            <p class="intro">
+                Descubra em 30 segundos o bloqueio mental oculto.<br>
+                Pare de nutrir o <span class="highlight-red">hábito</span> e retome o <span class="highlight-teal">controle</span>.
+            </p>
+        </div>
+
+        <!-- CONTEÚDO DINÂMICO -->
+        <div id="quiz-content"></div>
+
+        <!-- TELA DE RESULTADO -->
+        <div id="quiz-result" class="result-box">
+            <div class="result-icon-container">
+                <i class="fas fa-brain"></i>
+            </div>
+            
+            <div class="result-title">Diagnóstico: Vício Subconsciente</div>
+            
+            <div class="result-description">
+                <p>Suas respostas indicam que o cigarro se tornou uma <strong>muleta emocional</strong> enraizada na sua neurobiologia. Tentar parar apenas com "força de vontade" gera atrito mental, causando recaídas.</p>
+            </div>
+            
+            <!-- Gráfico Visualmente Melhorado -->
+            <div class="graph-container">
+                <div class="graph-header">
+                    <span>Probabilidade de Sucesso</span>
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                
+                <div class="bar-group">
+                    <div class="bar-info">
+                        <span style="color: #64748b;">Método Tradicional</span>
+                        <span>3%</span>
+                    </div>
+                    <div class="track"><div class="fill low"></div></div>
+                </div>
+                
+                <div class="bar-group" style="margin-top: 15px;">
+                    <div class="bar-info">
+                        <span style="color: var(--primary);">Método Respira</span>
+                        <span style="color: var(--primary);">93%</span>
+                    </div>
+                    <div class="track"><div class="fill high"></div></div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <i class="fas fa-check-circle" style="margin-right:8px"></i>
+                Não lute contra o vício. Reprograme sua mente para esquecer que ele existe em 21 dias.
+            </div>
+
+            <a href="https://metodorespira.vercel.app/" class="btn-cta">
+                Reprogramar Minha Mente
+                <i class="fas fa-arrow-right"></i>
+            </a>
+            
+            <p style="margin-top: 15px; font-size: 0.75rem; color: #94a3b8;">Acesso imediato e seguro.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // Lógica do Quiz Otimizada para UX
+        const questions = [
+            {
+                question: "1. Qual sua relação com o cigarro pela manhã?",
+                options: [
+                    "É a primeira coisa que faço (em 30 min).",
+                    "Fumo logo após o café para 'ativar'.",
+                    "Consigo esperar até sair de casa.",
+                    "Sem horário fixo, fumo por estresse."
+                ]
+            },
+            {
+                question: "2. O que acontece ao tentar parar?",
+                options: [
+                    "A ansiedade fica insuportável.",
+                    "Sinto que perco minha paz/relaxamento.",
+                    "Consigo uns dias, mas recaio na crise.",
+                    "Nunca tentei por medo de falhar."
+                ]
+            },
+            {
+                question: "3. Se pudesse desligar a vontade hoje, você faria?",
+                options: [
+                    "Sim! Não aguento mais gastar saúde.",
+                    "Com certeza, quero ser livre.",
+                    "Sim, se for natural e sem remédios.",
+                    "Tenho medo, mas preciso urgente."
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        const quizContent = document.getElementById('quiz-content');
+        const progressBar = document.getElementById('progressBar');
+        const quizHeader = document.getElementById('quiz-header');
+        const quizResult = document.getElementById('quiz-result');
+
+        function loadQuestion() {
+            // Atualiza barra (UX visual: começa com um pouco preenchido)
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            quizContent.innerHTML = ''; // Limpa anterior
+
+            const q = questions[currentQuestionIndex];
+            
+            // Container da pergunta com animação
+            const qBox = document.createElement('div');
+            qBox.className = 'question-box active';
+
+            // Texto da Pergunta
+            const qTitle = document.createElement('div');
+            qTitle.className = 'question-text';
+            qTitle.innerText = q.question;
+            qBox.appendChild(qTitle);
+
+            // Container das Opções
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-grid';
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('div'); // Mudado para div para melhor controle de estilo
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                
+                // Adiciona evento de clique com feedback visual
+                btn.onclick = function() {
+                    // Remove seleção de outros
+                    const allOpts = optionsDiv.querySelectorAll('.option-btn');
+                    allOpts.forEach(el => el.classList.remove('selected'));
+                    
+                    // Adiciona seleção ao atual
+                    this.classList.add('selected');
+
+                    // Pequeno delay para o usuário perceber a seleção (Melhora UX)
+                    setTimeout(() => {
+                        nextQuestion();
+                    }, 350);
+                };
+                
+                optionsDiv.appendChild(btn);
+            });
+
+            qBox.appendChild(optionsDiv);
+            quizContent.appendChild(qBox);
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            // Animação final da barra
+            progressBar.style.width = '100%';
+            
+            // Fade out do conteúdo
+            quizContent.style.opacity = '0';
+            quizHeader.style.opacity = '0';
+            
+            setTimeout(() => {
+                quizHeader.style.display = 'none';
+                quizContent.style.display = 'none';
+                quizResult.style.display = 'block';
+                
+                // Scroll suave para garantir visibilidade em telas pequenas
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 300);
+        }
+
+        // Iniciar
+        loadQuestion();
 
     </script>
 
